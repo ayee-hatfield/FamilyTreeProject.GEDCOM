@@ -65,13 +65,23 @@ namespace FamilyTreeProject.GEDCOM
             return String.Format("@{0}{1}@", prefix, id);
         }
 
+        private static Regex _idRegex = new Regex(@"[a-zA-Z]+(\d*)");
         public static string GetId(string idString)
         {
-            int id;
-            if (String.IsNullOrEmpty(idString) || !Int32.TryParse(idString.Substring(2, idString.Length - 3), out id))
+            int id = -1;
+            if (!String.IsNullOrEmpty(idString))
             {
-                id = -1;
+                Match idMatch = _idRegex.Match(idString);
+                if (idMatch.Success)
+                {
+                    int parsedInt = 0;
+                    if (Int32.TryParse(idMatch.Groups[1].Value, out parsedInt))
+                    {
+                        id = parsedInt;
+                    }                    
+                }
             }
+
             return id.ToString();
         }
 
